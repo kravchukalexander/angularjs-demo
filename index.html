@@ -1,0 +1,123 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Weather Test Task">
+    <meta name="author" content="Alexander Kravchuk">
+
+    <title>Weather Tets Task | Alexander Kravhcuk</title>
+
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/styles.css" rel="stylesheet" />
+</head>
+
+<body ng-app="weather">
+
+    <section id="weather" ng-controller="weatherController" ng-cloak>
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="well-lg">
+                        <div class="input-group">
+                            <input type="text" class="form-control" ng-model="location" ng-enter="search()" ng-disabled="loadingForecast" placeholder="Toronto, Canada">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default btn-primary" type="button" ng-click="search()" ng-disabled="loadingForecast">
+                                    <span class="glyphicon glyphicon-search" aria-hidden="true"></span> Search
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" ng-show="forecastData">
+                <div class="col-sm-12 col-md-8">
+                    <h1 class="location">{{forecastData.city.name}}, {{forecastData.city.country}}</h1>
+                </div>
+                <div class="col-sm-12 col-md-4">
+                    <div class="btn-group pull-right unit-of-measure">
+                        <button type="button" class="btn btn-primary btn-sm dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-haspopup="true"
+                                aria-expanded="false">
+                            {{unitOfMeasure.name}} <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="#" ng-repeat="unit in unitsOfMeasure"
+                                   ng-click="setUnitOfMeasure(unit)">{{unit.name}}</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="row weather-widget-container">
+                <div class="col-sm-12">
+                    <div class="cover" ng-show="loadingForecast">
+                        <div class="svg-container">
+                            <svg width='120px' height='120px' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" class="uil-default"><rect x="0" y="0" width="100" height="100" fill="none" class="bk"></rect><rect x='46.5' y='40' width='7' height='20' rx='5' ry='5' fill='#00b2ff' transform='rotate(0 50 50) translate(0 -30)'> <animate attributeName='opacity' from='1' to='0' dur='1s' begin='0s' repeatCount='indefinite' /></rect><rect x='46.5' y='40' width='7' height='20' rx='5' ry='5' fill='#00b2ff' transform='rotate(30 50 50) translate(0 -30)'> <animate attributeName='opacity' from='1' to='0' dur='1s' begin='0.08333333333333333s' repeatCount='indefinite' /></rect><rect x='46.5' y='40' width='7' height='20' rx='5' ry='5' fill='#00b2ff' transform='rotate(60 50 50) translate(0 -30)'> <animate attributeName='opacity' from='1' to='0' dur='1s' begin='0.16666666666666666s' repeatCount='indefinite' /></rect><rect x='46.5' y='40' width='7' height='20' rx='5' ry='5' fill='#00b2ff' transform='rotate(90 50 50) translate(0 -30)'> <animate attributeName='opacity' from='1' to='0' dur='1s' begin='0.25s' repeatCount='indefinite' /></rect><rect x='46.5' y='40' width='7' height='20' rx='5' ry='5' fill='#00b2ff' transform='rotate(120 50 50) translate(0 -30)'> <animate attributeName='opacity' from='1' to='0' dur='1s' begin='0.3333333333333333s' repeatCount='indefinite' /></rect><rect x='46.5' y='40' width='7' height='20' rx='5' ry='5' fill='#00b2ff' transform='rotate(150 50 50) translate(0 -30)'> <animate attributeName='opacity' from='1' to='0' dur='1s' begin='0.4166666666666667s' repeatCount='indefinite' /></rect><rect x='46.5' y='40' width='7' height='20' rx='5' ry='5' fill='#00b2ff' transform='rotate(180 50 50) translate(0 -30)'> <animate attributeName='opacity' from='1' to='0' dur='1s' begin='0.5s' repeatCount='indefinite' /></rect><rect x='46.5' y='40' width='7' height='20' rx='5' ry='5' fill='#00b2ff' transform='rotate(210 50 50) translate(0 -30)'> <animate attributeName='opacity' from='1' to='0' dur='1s' begin='0.5833333333333334s' repeatCount='indefinite' /></rect><rect x='46.5' y='40' width='7' height='20' rx='5' ry='5' fill='#00b2ff' transform='rotate(240 50 50) translate(0 -30)'> <animate attributeName='opacity' from='1' to='0' dur='1s' begin='0.6666666666666666s' repeatCount='indefinite' /></rect><rect x='46.5' y='40' width='7' height='20' rx='5' ry='5' fill='#00b2ff' transform='rotate(270 50 50) translate(0 -30)'> <animate attributeName='opacity' from='1' to='0' dur='1s' begin='0.75s' repeatCount='indefinite' /></rect><rect x='46.5' y='40' width='7' height='20' rx='5' ry='5' fill='#00b2ff' transform='rotate(300 50 50) translate(0 -30)'> <animate attributeName='opacity' from='1' to='0' dur='1s' begin='0.8333333333333334s' repeatCount='indefinite' /></rect><rect x='46.5' y='40' width='7' height='20' rx='5' ry='5' fill='#00b2ff' transform='rotate(330 50 50) translate(0 -30)'> <animate attributeName='opacity' from='1' to='0' dur='1s' begin='0.9166666666666666s' repeatCount='indefinite' /></rect></svg>
+                        </div>
+                    </div>
+                    <div class="weather-widget">
+                        <ng-weather-widget data="forecastData.matrix" unit="unitOfMeasure"></ng-weather-widget>
+                    </div>
+                    <h2 ng-hide="loadingForecast || forecastData">Ooops...Something went wrong. Please try to enter another location.</h2>
+                </div>
+            </div>
+        </div> <!-- /container -->
+    </section>
+
+    <script src="scripts/jquery-1.9.1.min.js"></script>
+    <script src="scripts/bootstrap.min.js"></script>
+    <script src="scripts/angular.min.js"></script>
+    <script src="scripts/app/app.js"></script>
+    <script src="scripts/app/filters/openWeatherMapIconUrl.js"></script>
+    <script src="scripts/app/filters/dtFilter.js"></script>
+    <script src="scripts/app/filters/noneFakeValueDate.js"></script>
+    <script src="scripts/app/directives/ngEnter.js"></script>
+    <script src="scripts/app/directives/ngWeatherWidget.js"></script>
+    <script src="scripts/app/directives/ngWeatherWidgetItem.js"></script>
+    <script src="scripts/app/services/forecast.js"></script>
+    <script src="scripts/app/controllers/weatherController.js"></script>
+
+    <script type="text/ng-template" id="scripts/app/directives/templates/ngWeatherWidget.html">
+        <div class="row" ng-repeat="row in data">
+            <div class="col-sm-12 col-md-4">
+                <h2>{{row | noneFakeValueDate | dtFilter | date: 'dd MMMM, EEEE'}}</h2>
+            </div>
+            <div class="col-md-1" ng-repeat="column in row">
+                <ng-weather-widget-item data="column" unit="unit"></ng-weather-widget-item>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/ng-template" id="scripts/app/directives/templates/ngWeatherWidgetItem.html">
+        <div class="row" ng-class="data.fake ? 'hidden-xs hidden-sm' : ''">
+            <div class="col-sm-12 time-range">
+                <h4>
+                    <span ng-if="!data.fake">{{data.dt | dtFilter | date: 'hh a'}}</span> &nbsp;
+                </h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="weather-widget-item" ng-if="!data.fake">
+                    <img ng-src="{{data.weather[0].icon | openWeatherMapIconUrl}}" alt="{{data.weather[0].description}}" title="{{data.weather[0].description}}" />
+                    <h5>{{data.weather[0].main}}</h5>
+                    <p class="temperature">
+                        <span class="label label-primary">{{data.main.temp.toFixed(0)}} &deg;{{unit.temp_suffix}}</span>
+                    </p>
+                    <p class="humidity">
+                        HUM: {{data.main.humidity}}%
+                    </p>
+                    <p class="wind">
+                        {{data.wind.speed}} {{unit.wind_suffix}}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </script>
+
+</body>
+</html>
